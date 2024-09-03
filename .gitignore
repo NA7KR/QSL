@@ -1,0 +1,4 @@
+config.json
+*.txt
+testDB.py
+Mismatch*

@@ -1,0 +1,7 @@
+{
+    "username": "MYCALL",
+    "password": "MyPASSWORD",
+    "agent": "QSL",
+     "dsn": "QSL",
+    "non_update_statuses": ["SK", "SILENT KEY", "DNU-DESTROY", "Active_DIFF_Address"]
+}
