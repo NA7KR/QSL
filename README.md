@@ -1,7 +1,7 @@
 
 # QRZ Data Fetcher
 
-This project is a Python-based tool to fetch and update callsign data from QRZ.com and store it in a database. The script provides various functionalities such as fetching specific callsigns, processing multiple callsigns from a file, and refreshing the entire database.
+This project is a Python-based tool that fetches and updates callsign data from QRZ.com and stores it in a database. The script provides various functionalities, such as fetching specific callsigns, processing multiple callsigns from a file, and refreshing the entire database.
 
 ## Prerequisites
 
@@ -11,8 +11,8 @@ If Python is not already installed on your system:
 
 - Download and install Python from the [official Python website](https://www.python.org/downloads/).
 - During installation, ensure that you check the option to add Python to your system's PATH.
-- Next, most of the way, two settings need to be changed.
--
+- two settings need to be changed else next.
+
 ![2024-11-26 10_05_22-Download Python _ Python org and 7 more pages - Personal - Microsoft​ Edge Beta](https://github.com/user-attachments/assets/603e30f4-ff9f-461f-9be1-fd093670d0d5)
 
 ![2024-11-26 10_07_35-Download Python _ Python org and 7 more pages - Personal - Microsoft​ Edge Beta](https://github.com/user-attachments/assets/1c56c9c5-bf25-44f9-a51a-22dc48c39e66)
@@ -34,7 +34,8 @@ Keep screen open
 ### 2. Set Up Your Working Environment
 
 - Create a directory on your system to store the files, e.g., `C:/QSL`.
-- Copy all necessary files into this folder.
+- Download zip from https://github.com/NA7KR/QSL/archive/refs/heads/main.zip
+- Copy folder `C:/QSL`.
 
 ### 3. Configure `config.json`
 
@@ -45,9 +46,11 @@ Keep screen open
 Example:
 ```json
 {
-    "username": "your_qrz_username",
-    "password": "your_qrz_password",
-    "agent": "your_agent_string"
+    "username": "N0AAA",
+    "password": "MyPassword",
+    "agent": "QSL",
+    "dsn": "QSL",
+    "non_update_statuses": ["SK", "SILENT KEY", "DNU-DESTROY", "Active_DIFF_Address"]
 }
 ```
 
@@ -77,6 +80,8 @@ Windows Key ```ODBC``` select the 32 or 64 version as above.
 ![2024-11-26 11_06_22-devic - Control Panel](https://github.com/user-attachments/assets/0d32a7f7-1cfb-479e-bba6-2b71acff306c)
 
 ![2024-11-26 11_07_05-ODBC Data Source Administrator (64-bit)](https://github.com/user-attachments/assets/17a284f3-c0b3-4399-91e2-0936760c1996)
+
+Note must match dsn above.
 
 ![2024-11-26 11_09_25-ODBC Data Source Administrator (64-bit)](https://github.com/user-attachments/assets/fcb5d43e-ca0b-43f8-b2bc-8172ea8f70a4)
 
