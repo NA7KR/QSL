@@ -1,11 +1,7 @@
 
 # QRZ Data Fetcher
 
-<<<<<<< HEAD
-This project is a Python-based tool that fetches and updates callsign data from QRZ.com and stores it in a database. The script provides various functionalities, such as fetching specific callsigns, processing multiple callsigns from a file, and refreshing the entire database.
-=======
 This project is a Python-based tool to fetch and update callsign data from QRZ.com and store it in a database. The script provides various functionalities such as fetching specific callsigns, processing multiple callsigns from a file, and refreshing the entire database.
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 
 ## Prerequisites
 
@@ -15,7 +11,6 @@ If Python is not already installed on your system:
 
 - Download and install Python from the [official Python website](https://www.python.org/downloads/).
 - During installation, ensure that you check the option to add Python to your system's PATH.
-<<<<<<< HEAD
 - two settings need to be changed else next.
 
 ![2024-11-26 10_05_22-Download Python _ Python org and 7 more pages - Personal - Microsoft​ Edge Beta](https://github.com/user-attachments/assets/603e30f4-ff9f-461f-9be1-fd093670d0d5)
@@ -35,18 +30,13 @@ Next type:
 ![2024-11-26 10_29_30-](https://github.com/user-attachments/assets/620bd489-ff92-4d16-987d-d42d3760ed5d)
 
 Keep screen open
-=======
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 
 ### 2. Set Up Your Working Environment
 
 - Create a directory on your system to store the files, e.g., `C:/QSL`.
-<<<<<<< HEAD
 - Download zip from https://github.com/NA7KR/QSL/archive/refs/heads/main.zip
 - Copy folder `C:/QSL`.
-=======
 - Copy all necessary files into this folder.
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 
 ### 3. Configure `config.json`
 
@@ -57,93 +47,48 @@ Keep screen open
 Example:
 ```json
 {
-<<<<<<< HEAD
     "username": "N0AAA",
     "password": "MyPassword",
     "agent": "QSL",
     "dsn": "QSL",
     "non_update_statuses": ["SK", "SILENT KEY", "DNU-DESTROY", "Active_DIFF_Address"]
-=======
     "username": "your_qrz_username",
     "password": "your_qrz_password",
     "agent": "your_agent_string"
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 }
 ```
 
 ### 4. Determine Python Architecture
 
 Run the following command to check if your Python installation is 32-bit or 64-bit:
-<<<<<<< HEAD
-```cd \qsl ``` 
-or your folder name and path
 ```sh
 python fetch_qrz_data.py --arch
 ```
-![2024-11-26 10_33_39-Microsoft Store](https://github.com/user-attachments/assets/08386470-3949-4012-a0c5-9c297852ecfd)
-=======
-```sh
-python fetch_qrz_data.py --arch
-```
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 
 ### 5. Run the Appropriate ODBC Setup
 
 Based on the architecture identified in the previous step, run the corresponding ODBC (32-bit or 64-bit) configuration tool.
-<<<<<<< HEAD
-Windows Key ```ODBC``` select the 32 or 64 version as above.
-=======
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 
 ### 6. Configure ODBC Data Source (DSN)
 
 - Open the ODBC Data Source Administrator tool (select 32-bit or 64-bit based on your Python architecture).
 - Add a new Data Source Name (DSN) for Microsoft Access (`accdb`).
 - Point this DSN to the Access database file located in your Dropbox (or other specified location).
-<<<<<<< HEAD
-- 
-![2024-11-26 11_05_15-devic - Control Panel](https://github.com/user-attachments/assets/77b1841a-f65f-4f0f-ab82-11c43f5ad8de)
-
-![2024-11-26 11_06_22-devic - Control Panel](https://github.com/user-attachments/assets/0d32a7f7-1cfb-479e-bba6-2b71acff306c)
-
-![2024-11-26 11_07_05-ODBC Data Source Administrator (64-bit)](https://github.com/user-attachments/assets/17a284f3-c0b3-4399-91e2-0936760c1996)
-
-Note must match dsn above.
-
-![2024-11-26 11_09_25-ODBC Data Source Administrator (64-bit)](https://github.com/user-attachments/assets/fcb5d43e-ca0b-43f8-b2bc-8172ea8f70a4)
-
-![2024-11-26 11_11_01-C__QSL_config json - Notepad++](https://github.com/user-attachments/assets/24d03737-75d8-4464-842f-af11748f6a16)
-
-![2024-11-26 11_12_14-ODBC Data Source Administrator (64-bit)](https://github.com/user-attachments/assets/b1585bd4-668b-451f-9a6a-d2a4fc2f058e)
-
-![2024-11-26 11_13_11-C__QSL_config json - Notepad++](https://github.com/user-attachments/assets/3b6fae7b-d171-4d0a-8a69-a281ebc1d461)
-=======
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 
 ## Usage
 
 ### 1. View QRZ Data
 
 To view the current QRZ data without making any updates, use:
-<<<<<<< HEAD
-```
-python fetch_qrz_data.py --refresh
-=======
 ```sh
 python fetch_qrz_data.py --refresh --view
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 ```
 
 ### 2. Update the Database with New Data
 
 To refresh the database and update it with the latest QRZ data:
-<<<<<<< HEAD
-```
-python fetch_qrz_data.py --refresh --update 
-=======
 ```sh
 python fetch_qrz_data.py --refresh --update [--debug]
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 ```
 
 - The `--debug` flag is optional and will print detailed debug information.
@@ -151,28 +96,17 @@ python fetch_qrz_data.py --refresh --update [--debug]
 ### 3. Fetch and Update a Specific Callsign
 
 To fetch data for a specific callsign and update the database:
-<<<<<<< HEAD
-```
-python fetch_qrz_data.py --callsign CALLSIGN --update 
-```
-=======
 ```sh
 python fetch_qrz_data.py --callsign CALLSIGN --update [--debug]
 ```
 
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 - Replace `CALLSIGN` with the actual callsign you want to look up.
 
 ### 4. Process Multiple Callsigns from a File
 
 To fetch and update data for multiple callsigns listed in a file:
-<<<<<<< HEAD
-```
-python fetch_qrz_data.py --file callsigns.txt --update
-=======
 ```sh
 python fetch_qrz_data.py --file callsigns.txt --update [--debug]
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 ```
 
 - Ensure that `callsigns.txt` contains one callsign per line.
@@ -180,16 +114,9 @@ python fetch_qrz_data.py --file callsigns.txt --update [--debug]
 ### 5. Interactive Update for Callsign
 
 To run the script and be prompted interactively for a callsign:
-<<<<<<< HEAD
-```
-python fetch_qrz_data.py --update
-```
-Note adding --debug to end for more info.
-=======
 ```sh
 python fetch_qrz_data.py --update
 ```
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 
 - The script will ask you to enter a callsign, which it will then process and update in the database.
 
@@ -216,47 +143,27 @@ The script handles various errors gracefully:
 ## Example Usages
 
 ### Fetch and Update a Specific Callsign
-<<<<<<< HEAD
-```
-=======
 ```sh
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 python fetch_qrz_data.py --callsign CALLSIGN --update --debug
 ```
 
 ### Fetch and Update Multiple Callsigns from a File
-<<<<<<< HEAD
-```
-=======
 ```sh
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 python fetch_qrz_data.py --file callsigns.txt --update --debug
 ```
 
 ### Refresh the Entire Database
-<<<<<<< HEAD
-```
-=======
 ```sh
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 python fetch_qrz_data.py --refresh --update --debug
 ```
 
 ### Print Python Architecture
-<<<<<<< HEAD
-```
-=======
 ```sh
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 python fetch_qrz_data.py --arch
 ```
 
 ### Print Script Version
-<<<<<<< HEAD
-```
-=======
 ```sh
->>>>>>> 710dbe7 (update for QRZ /SKxxxx)
 python fetch_qrz_data.py --version
 ```
 
