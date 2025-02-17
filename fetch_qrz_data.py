@@ -4,6 +4,7 @@ import requests  # To make HTTP requests
 import sys  # To handle system-level operations
 import platform  # To retrieve information about the system
 import csv  # To handle CSV file operations
+import re  # To work with regular expressions
 from datetime import datetime  # To work with dates and times
 
 # Attempt to import the 'pyodbc' module, which is required for database connections
@@ -144,27 +145,30 @@ def normalize_name(name):
     return ' '.join(name.split()).split(' ')[0]
 
 def process_callsign(session_key, callsign, update, checkstatus, debug, mismatch_log, status_file):
-    """Process a single callsign: fetch data, check status, and update the database."""
+    # Remove '/SK' suffix with digits if present.
+    # This will convert, for example, 'KB7OUU/SK2025' to 'KB7OUU'
+    cleaned_callsign = re.sub(r'/SK\d+', '', callsign.upper())
+    
     try:
-        # Fetch the data for the callsign
-        callsign_data = get_callsign_data(session_key, callsign)
+        # Fetch the data for the cleaned callsign
+        callsign_data = get_callsign_data(session_key, cleaned_callsign)
         # Parse the fetched data into a Callsign object
         parsed_data = parse_callsign_data(callsign_data)
+        
+        # Update the callsign attribute with the cleaned version
+        parsed_data.call = cleaned_callsign
+        
         if debug:
-            # Output the fetched data if debugging is enabled
-            print(f"Fetched data for {callsign}: {vars(parsed_data)}")
+            print(f"Fetched data for {cleaned_callsign}: {vars(parsed_data)}")
         if checkstatus:
-            # Check the status of the callsign if the checkstatus flag is set
-            check_callsign_status(callsign, parsed_data, update, debug, mismatch_log, status_file)
+            check_callsign_status(cleaned_callsign, parsed_data, update, debug, mismatch_log, status_file)
         if update:
-            # Update the database with the parsed data if the update flag is set
             insert_or_update_callsign_in_db(parsed_data, debug, mismatch_log)
     except Exception as e:
-        # Handle specific error cases and output an error message if an exception is raised
         if "Not found" in str(e):
-            update_callsign_status_to_inactive_if_needed(callsign, debug)
+            update_callsign_status_to_inactive_if_needed(cleaned_callsign, debug)
         else:
-            print(f'Error fetching data for {callsign}: {e}')
+            print(f'Error fetching data for {cleaned_callsign}: {e}')
 
 def insert_or_update_callsign_in_db(callsign, debug, mismatch_log):
     """Insert or update the callsign data in the database."""
@@ -178,8 +182,7 @@ def insert_or_update_callsign_in_db(callsign, debug, mismatch_log):
             license_end_date = datetime.strptime(callsign.license_end, '%Y-%m-%d')
             status = "License Expired" if license_end_date < datetime.now() else callsign.status
         except (ValueError, TypeError):
-            # Handle the case where the license end date is invalid
-            print(f"Invalid license end date for callsign {callsign.call}: {callsign.license_end}")
+            # Ignore invalid license end dates and do not output an error message
             return
 
         # Check if the callsign already exists in the database
@@ -208,12 +211,10 @@ def insert_or_update_callsign_in_db(callsign, debug, mismatch_log):
                               callsign.state, callsign.zip_code, callsign.license_start, 
                               callsign.license_end, callsign.license_class, callsign.email, status, today_date, callsign.call)
                     if debug:
-                        # Output the SQL query and parameters if debugging is enabled
                         print(f"Executing SQL: {sql}")
                         print(f"Parameters: {params}")
                     cursor.execute(sql, params)
                     if debug:
-                        # Confirm the update if debugging is enabled
                         print(f"Updated {callsign.call} in the database.")
             else:
                 # Log and report a mismatch if the names do not match
@@ -236,18 +237,16 @@ def insert_or_update_callsign_in_db(callsign, debug, mismatch_log):
                       callsign.state, callsign.zip_code, callsign.license_start, 
                       callsign.license_end, callsign.license_class, callsign.email, status, today_date)
             if debug:
-                # Output the SQL query and parameters if debugging is enabled
                 print(f"Executing SQL: {sql}")
                 print(f"Parameters: {params}")
             cursor.execute(sql, params)
             if debug:
-                # Confirm the insertion if debugging is enabled
                 print(f"Inserted {callsign.call} into the database.")
         
         conn.commit()  # Commit the transaction to the database
     except pyodbc.Error as e:
-        # Handle database errors and output an error message
-        print(f'Error inserting or updating callsign in database: {e}')
+        # Include the callsign in the error message
+        print(f'Error inserting or updating callsign {callsign.call} in database: {e}')
     finally:
         if conn:
             conn.close()  # Close the database connection
@@ -386,6 +385,7 @@ def main():
     # Handle the '--version' option to print the script version and exit
     if args.version:
         print(f"Script Version: {VERSION}")
+        
         sys.exit(0)
 
     # Define filenames for logging mismatches and status discrepancies
