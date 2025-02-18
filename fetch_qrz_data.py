@@ -95,6 +95,21 @@ def get_callsign_data(session_key, callsign):
     # Return the XML data for further processing
     return xml_data
 
+def normalize_first_name(name):
+    """
+    Normalize a first name by trimming extra spaces, converting to title case,
+    and if the name starts with a single letter followed by a space,
+    remove that initial letter and the space.
+    """
+    # Remove extra spaces and convert to title case
+    name = " ".join(name.split()).title()
+    parts = name.split(" ")
+    # If there is more than one word and the first word is a single letter, remove it.
+    if len(parts) > 1 and len(parts[0]) == 1:
+        return " ".join(parts[1:])
+    return name
+
+
 def parse_callsign_data(xml_data):
     """Parse the XML data into a Callsign object."""
     call = extract_xml_value(xml_data, 'call')
@@ -102,31 +117,43 @@ def parse_callsign_data(xml_data):
 
     first_name = extract_xml_value(xml_data, 'fname')
     last_name = extract_xml_value(xml_data, 'name')
-    # If the first name is not provided, split the name into first and last
+    
+    # Remove any comma and everything after it from the last name
+    if last_name:
+        last_name = last_name.split(',')[0].strip()
+    
+    # If the first name is not provided, split the last name into first and last.
     if not first_name:
         name_parts = last_name.split(' ')
         first_name = name_parts[0]
         last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else name_parts[0]
+    else:
+        # Convert both names to title case
+        first_name = first_name.title()
+        last_name = last_name.title()
 
+        # For first name: always keep the first word, but ignore additional words if they are a single letter.
+        words = first_name.split()
+        if words:
+            first_name = " ".join([words[0]] + [w for w in words[1:] if len(w) > 1])
+    
     addr1 = extract_xml_value(xml_data, 'addr1')
     town = extract_xml_value(xml_data, 'addr2')
     state = extract_xml_value(xml_data, 'state')
     zip_code = extract_xml_value(xml_data, 'zip')
     country = extract_xml_value(xml_data, 'country')
     license_start = extract_xml_value(xml_data, 'efdate')
-    # Simplify the license start date format
     if license_start:
         license_start = license_start.split(' ')[0]
     license_end = extract_xml_value(xml_data, 'expdate')
-    # Simplify the license end date format
     if license_end:
         license_end = license_end.split(' ')[0]
     license_class_code = extract_xml_value(xml_data, 'class')
     license_class = map_license_class(license_class_code)
     email = extract_xml_value(xml_data, 'email')
 
-    # Return a new Callsign object with the parsed data
     return Callsign(call, xref, first_name, last_name, addr1, town, state, zip_code, country, license_start, license_end, license_class, email)
+
 
 def map_license_class(class_code):
     """Map a license class code to its full description."""
@@ -198,7 +225,9 @@ def insert_or_update_callsign_in_db(callsign, debug, mismatch_log):
             db_last_name = row[1]
             db_status = row[2]
 
-            if normalize_name(db_first_name.lower()) == normalize_name(callsign.first_name.lower()) and db_last_name.lower() == callsign.last_name.lower():
+            if normalize_first_name(db_first_name) == normalize_first_name(callsign.first_name) and db_last_name.lower() == callsign.last_name.lower():
+            # Proceed with update
+
                 if db_status not in NON_UPDATE_STATUSES:
                     # Update the existing record if the status allows it
                     sql = """
