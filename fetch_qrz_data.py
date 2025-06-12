@@ -17,7 +17,7 @@ except ModuleNotFoundError:
     sys.exit(1)  # Exit the program with a status code indicating an error
 
 # Define the script's version number
-VERSION = "1.0.6"
+VERSION = "1.0.7"
 
 def load_config():
     """Load the configuration from the 'config.json' file."""
@@ -247,6 +247,22 @@ def insert_or_update_callsign_in_db(callsign, debug, mismatch_log):
                         print(f"Updated {callsign.call} in the database.")
             else:
                 # Log and report a mismatch if the names do not match
+                print(f"DB first: '{db_first_name}' → {normalize_first_name(db_first_name)}")
+                print(f"QRZ first: '{callsign.first_name}' → {normalize_first_name(callsign.first_name)}")
+                print(f"DB last: '{db_last_name.lower()}'")
+                print(f"QRZ last: '{callsign.last_name.lower()}'")
+                if '\n' in db_first_name or '\r' in db_first_name:
+                    print(f"[Warning] First name in DB for {callsign.call} contains multiple lines:")
+                    print("----- DB First Name -----")
+                    print(repr(db_first_name))
+                    print("----- QRZ First Name -----")
+                    print(repr(callsign.first_name))
+                if '\n' in db_last_name or '\r' in db_last_name:
+                    print(f"[Warning] Last name in DB for {callsign.call} contains multiple lines:")
+                    print("----- DB Last Name -----")
+                    print(repr(db_last_name))
+                    print("----- QRZ Last Name -----")
+                    print(repr(callsign.last_name))
                 mismatch_message = f"No update performed for callsign {callsign.call} due to mismatch in first or last name.\n"
                 if normalize_name(db_first_name.lower()) != normalize_name(callsign.first_name.lower()):
                     mismatch_message += f"First name mismatch: DB = {db_first_name}, QRZ = {callsign.first_name}\n"
